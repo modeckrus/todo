@@ -24,3 +24,19 @@ class TodoModel extends Todo{
     };
   }
 }
+class TodosModel {
+  final List<Todo> todos;
+  TodosModel(this.todos);
+  //List<Todo> todos = [];
+  factory TodosModel.fromJson(dynamic json){
+    List<Todo> todos = [];
+    for(var td in json){
+      var todo = TodoModel.fromJson(td);
+      todos.add(todo);
+    }
+    return TodosModel(todos);
+  }
+  dynamic toJson(){
+    return todos;
+  }
+}
