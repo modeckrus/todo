@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:todoapp/core/error/exception.dart';
+import 'package:todoapp/feautures/todo/data/models/todo_model.dart';
 import 'package:todoapp/feautures/todo/domain/entities/todo.dart';
 
 import 'package:http/http.dart' as http;
@@ -17,14 +21,28 @@ class TodoHttpDataSourceImpl implements TodoHttpDataSource{
   final http.Client client;
   TodoHttpDataSourceImpl({@required this.client});
   @override
-  Future<Todo> addTodo(Todo todo) {
-    // TODO: implement addTodo
-    return null;
+  Future<Todo> addTodo(Todo todo) async{
+    final result = await client.get(
+          'http://localhost:8080/api/loadtodos',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        );
+    if(result.statusCode == 200){
+      return TodoModel.fromJson(json.decode(result.body));
+    }else{
+      throw ServerException();
+    }
   }
 
   @override
-  Future<List<Todo>> clearCompleted() {
-    // TODO: implement clearCompleted
+  Future<List<Todo>> clearCompleted() async{
+    final result = await client.get(
+          'http://localhost:8080/api/loadtodos',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        );
     return null;
   }
 

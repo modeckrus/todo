@@ -41,12 +41,12 @@ void main(){
        being the endpoint and with application/json header''',
       () async {
         // arrange
-        setUpMockHttpClientSuccess200formultiple();
+        setUpMockHttpClientSuccess200forsingle();
         // act
-        dataSource.loadTodos();
+        dataSource.addTodo(tTodo);
         // assert
         verify(mockHttpClient.get(
-          'http://localhost:8080/api/loadTodos',
+          'http://localhost:8080/api/loadtodos',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -55,12 +55,12 @@ void main(){
     );
 
     test(
-      'should return NumberTrivia when the response code is 200 (success)',
+      'should return Todo when the response code is 200 (success)',
       () async {
         // arrange
-        setUpMockHttpClientSuccess200formultiple();
+        setUpMockHttpClientSuccess200forsingle();
         // act
-        final result = await dataSource.loadTodos();
+        final result = await dataSource.addTodo(tTodo);
         // assert
         expect(result, equals(tTodoModel));
       },
@@ -71,7 +71,7 @@ void main(){
         // arrange
         setUpMockHttpClientFailure404();
         // act
-        final call = dataSource.loadTodos();
+        final call = dataSource.addTodo(tTodo);
         // assert
         expect(() => call, throwsA(TypeMatcher<ServerException>()));
       },
