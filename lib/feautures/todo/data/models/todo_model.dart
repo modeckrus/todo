@@ -7,6 +7,14 @@ class TodoModel extends Todo{
     @required String note,
     @required bool complete, 
   }):super(task, id: id, note: note, complete: complete);
+  factory TodoModel.fromTodo(Todo todo){
+    return TodoModel(
+      todo.task,
+      id: todo.id,
+      note: todo.note,
+      complete: todo.complete
+    );
+  }
   factory TodoModel.fromJson(Map<String, dynamic> json){
     return TodoModel(
       json['task'],

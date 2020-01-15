@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
+import 'package:todoapp/core/httpclient/httpclient.dart';
 import 'package:todoapp/feautures/todo/data/datasources/todo_http_data_source.dart';
 import 'package:todoapp/feautures/todo/data/models/todo_model.dart';
 import 'package:todoapp/feautures/todo/domain/entities/todo.dart';
@@ -10,7 +11,7 @@ import 'package:todoapp/core/error/exception.dart';
 
 import '../../fixtures/fixture.dart';
 
-class MockHttpClient extends Mock implements http.Client {}
+class MockHttpClient extends Mock implements HttpClient {}
 
 void main() {
   TodoHttpDataSourceImpl dataSource;
@@ -20,37 +21,49 @@ void main() {
     mockHttpClient = MockHttpClient();
     dataSource = TodoHttpDataSourceImpl(client: mockHttpClient);
   });
+  void setUpMock(){
+    when(mockHttpClient.setCookie(any, any)).thenReturn((){
+      mockHttpClient.head['Content-Type'] = 'application/json';
+    });
+  }
   void setUpMockHttpClientSuccess200forsingle() {
+    setUpMock();
     when(mockHttpClient.get(any, headers: anyNamed('headers')))
         .thenAnswer((_) async => http.Response(fixture('todo.json'), 200));
   }
 
   void setUpMockHttpClientSuccess200formultiple() {
+    setUpMock();
     when(mockHttpClient.get(any, headers: anyNamed('headers')))
         .thenAnswer((_) async => http.Response(fixture('todos.json'), 200));
   }
 
   void setUpMockHttpPostSuccesforSingle() {
+    setUpMock();
     when(mockHttpClient.post(any,
             headers: anyNamed('headers'), body: anyNamed('body')))
         .thenAnswer((_) async => http.Response(fixture('todo.json'), 200));
   }
 
   void setUpMockHttpClientFailure404() {
+    setUpMock();
     when(mockHttpClient.get(any, headers: anyNamed('headers')))
         .thenAnswer((_) async => http.Response('Something went wrong', 404));
   }
   void setUpMockHttpPostSuccesforMultiple(){
+    setUpMock();
     when(mockHttpClient.post(any,
             headers: anyNamed('headers'), body: anyNamed('body')))
         .thenAnswer((_) async => http.Response(fixture('todos.json'), 200));
   }
 
   void setUpMockHttpPostFailure() {
+    setUpMock();
     when(mockHttpClient.post(any,
             headers: anyNamed('headers'), body: anyNamed('body')))
         .thenAnswer((_) async => http.Response('Something went wrong', 404));
   }
+  
 
   group('addTodo', () {
     final tTodo = Todo('task', complete: false, id: '1', note: 'note');
@@ -66,9 +79,6 @@ void main() {
         // assert
         verify(mockHttpClient.post(
           'http://localhost:8080/api/loadtodos',
-          headers: {
-            'Content-Type': 'application/json',
-          },
           body: tTodoModel.toJson(),
         ));
       },
@@ -113,9 +123,6 @@ void main() {
         // assert
         verify(mockHttpClient.get(
           'http://localhost:8080/api/clearcompleted',
-          headers: {
-            'Content-Type': 'application/json',
-          },
         ));
       },
     );
@@ -159,9 +166,6 @@ void main() {
         // assert
         verify(mockHttpClient.post(
           'http://localhost:8080/api/deletetodo',
-          headers: {
-            'Content-Type': 'application/json',
-          },
           body: tTodoModel.toJson(), 
         ));
       },
@@ -206,9 +210,6 @@ void main() {
         // assert
         verify(mockHttpClient.get(
           'http://localhost:8080/api/loadtodos',
-          headers: {
-            'Content-Type': 'application/json',
-          },
         ));
       },
     );
@@ -252,9 +253,6 @@ void main() {
         // assert
         verify(mockHttpClient.get(
           'http://localhost:8080/api/toggleAll',
-          headers: {
-            'Content-Type': 'application/json',
-          },
         ));
       },
     );
@@ -298,9 +296,6 @@ void main() {
         // assert
         verify(mockHttpClient.post(
           'http://localhost:8080/api/updatetodo',
-          headers: {
-            'Content-Type': 'application/json',
-          },
           body: tTodoModel.toJson(),
         ));
       },

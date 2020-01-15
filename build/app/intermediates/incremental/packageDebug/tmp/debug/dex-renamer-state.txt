@@ -1,0 +1,4 @@
+#Mon Jan 13 01:29:47 MSK 2020
+base.0=/home/modeck/flutterdev/todoapp/build/app/intermediates/dex/debug/mergeDexDebug/out/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
